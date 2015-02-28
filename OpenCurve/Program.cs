@@ -16,7 +16,9 @@ namespace OpenCurve
         static void Main()
         {
             using (var game = new OpenCurveGame())
+            {
                 game.Run();
+            }
         }
     }
 }

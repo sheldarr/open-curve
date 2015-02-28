@@ -59,6 +59,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenCurveEngine\OpenCurveEngine.csproj">
+      <Project>{5fb43611-ed9c-404a-bb39-ae5e26960d2b}</Project>
+      <Name>OpenCurveEngine</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\MonoGame.Binaries.3.2.0\build\net40\MonoGame.Binaries.targets" Condition="Exists('packages\MonoGame.Binaries.3.2.0\build\net40\MonoGame.Binaries.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
