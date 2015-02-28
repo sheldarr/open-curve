@@ -14,14 +14,17 @@ namespace OpenCurve
     /// </summary>
     public class OpenCurveGame : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+
+        private List<Player> Players { get; set; }
 
         public OpenCurveGame()
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            Players = new List<Player>();
         }
 
         /// <summary>
@@ -32,7 +35,19 @@ namespace OpenCurve
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            var player = new Player
+            {
+                Position = new Vector2(100, 100)
+            };
+
+            Players.Add(player);
+
+            var player2 = new Player
+            {
+                Position = new Vector2(400, 400)
+            };
+
+            Players.Add(player2);
 
             base.Initialize();
         }
@@ -68,6 +83,27 @@ namespace OpenCurve
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            foreach (var player in Players)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                {
+                    player.Position += new Vector2(0, -1);
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                {
+                    player.Position += new Vector2(0, 1);
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                {
+                    player.Position += new Vector2(-1, 0);
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                {
+                    player.Position += new Vector2(1, 0);
+                }
+                player.HistoryOfPosition.Add(player.Position);
+            }
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -82,10 +118,18 @@ namespace OpenCurve
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            var circle = createCircleText(100);
+            var circle = createCircleText(4);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(circle, new Vector2(100, 100), new Color(255,0,0));
+
+            foreach (var player in Players)
+            {
+                foreach (var position in player.HistoryOfPosition)
+                {
+                    spriteBatch.Draw(circle, position, new Color(255, 0, 0));
+                }
+            }
+
             spriteBatch.End();
 
             base.Draw(gameTime);
