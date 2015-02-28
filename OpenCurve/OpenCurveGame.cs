@@ -81,10 +81,43 @@ namespace OpenCurve
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            GraphicsDevice.DrawPrimitives(PrimitiveType.LineStrip, 0, 10);
             // TODO: Add your drawing code here
+            var circle = createCircleText(100);
+
+            spriteBatch.Begin();
+            spriteBatch.Draw(circle, new Vector2(100, 100), new Color(255,0,0));
+            spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        Texture2D createCircleText(int radius)
+        {
+            Texture2D texture = new Texture2D(GraphicsDevice, radius, radius);
+            Color[] colorData = new Color[radius * radius];
+
+            float diam = radius / 2f;
+            float diamsq = diam * diam;
+
+            for (int x = 0; x < radius; x++)
+            {
+                for (int y = 0; y < radius; y++)
+                {
+                    int index = x * radius + y;
+                    Vector2 pos = new Vector2(x - diam, y - diam);
+                    if (pos.LengthSquared() <= diamsq)
+                    {
+                        colorData[index] = Color.White;
+                    }
+                    else
+                    {
+                        colorData[index] = Color.Transparent;
+                    }
+                }
+            }
+
+            texture.SetData(colorData);
+            return texture;
         }
     }
 }
