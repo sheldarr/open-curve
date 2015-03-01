@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace OpenCurve
 {
+    using Engine.Bonuses;
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -17,7 +19,6 @@ namespace OpenCurve
 
         public OpenCurveGame()
         {
-            
             _graphicsDeviceManager = new GraphicsDeviceManager(this) {PreferMultiSampling = true};
             Content.RootDirectory = "Content";
             Players = new List<Player>();

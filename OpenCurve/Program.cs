@@ -2,6 +2,9 @@
 
 namespace OpenCurve
 {
+    using Microsoft.Xna.Framework;
+    using SimpleInjector;
+
     /// <summary>
     /// The main class.
     /// </summary>
@@ -13,9 +16,13 @@ namespace OpenCurve
         [STAThread]
         static void Main()
         {
-            using (var game = new OpenCurveGame())
+            var container = new Container();
+
+            container.RegisterSingle<OpenCurveGame>();
+
+            using (var openCurveGame = container.GetInstance<OpenCurveGame>())
             {
-                game.Run();
+                openCurveGame.Run();
             }
         }
     }
