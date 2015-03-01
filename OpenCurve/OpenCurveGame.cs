@@ -1,28 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Storage;
-using Microsoft.Xna.Framework.GamerServices;
 
 namespace OpenCurve
 {
+    using System.Linq;
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
     public class OpenCurveGame : Game
     {
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
+        private GraphicsDeviceManager _graphicsDeviceManager;
+        private SpriteBatch _spriteBatch;
 
         private List<Player> Players { get; set; }
 
         public OpenCurveGame()
-            : base()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphicsDeviceManager = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             Players = new List<Player>();
         }
@@ -35,14 +32,14 @@ namespace OpenCurve
         /// </summary>
         protected override void Initialize()
         {
-            var player = new Player
+            var player = new Player(Color.Yellow)
             {
                 Position = new Vector2(100, 100)
             };
 
             Players.Add(player);
 
-            var player2 = new Player
+            var player2 = new Player(Color.Red)
             {
                 Position = new Vector2(400, 400)
             };
@@ -59,7 +56,7 @@ namespace OpenCurve
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
         }
@@ -83,28 +80,22 @@ namespace OpenCurve
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            Players.ForEach(p => p.MakeMove());
+
             foreach (var player in Players)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                {
-                    player.Position += new Vector2(0, -1);
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                {
-                    player.Position += new Vector2(0, 1);
-                }
                 if (Keyboard.GetState().IsKeyDown(Keys.Left))
                 {
-                    player.Position += new Vector2(-1, 0);
+                    player.TurnLeft();
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.Right))
                 {
-                    player.Position += new Vector2(1, 0);
+                    player.TurnRight();
                 }
-                player.HistoryOfPosition.Add(player.Position);
+                //if (Players.SelectMany(p => p.PreviousPositions).Any(pp => pp == player.Position))
+                //{
+                //}
             }
-
-            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
@@ -116,39 +107,38 @@ namespace OpenCurve
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-            var circle = createCircleText(4);
-
-            spriteBatch.Begin();
+            
+            _spriteBatch.Begin();
 
             foreach (var player in Players)
             {
-                foreach (var position in player.HistoryOfPosition)
+                var circle = CreateCircleText(player.Size);
+
+                foreach (var position in player.PreviousPositions)
                 {
-                    spriteBatch.Draw(circle, position, new Color(255, 0, 0));
+                    _spriteBatch.Draw(circle, position, player.Color);
                 }
             }
 
-            spriteBatch.End();
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
 
-        Texture2D createCircleText(int radius)
+        Texture2D CreateCircleText(int radius)
         {
-            Texture2D texture = new Texture2D(GraphicsDevice, radius, radius);
-            Color[] colorData = new Color[radius * radius];
+            var texture = new Texture2D(GraphicsDevice, radius, radius);
+            var colorData = new Color[radius * radius];
 
-            float diam = radius / 2f;
-            float diamsq = diam * diam;
+            var diam = radius / 2f;
+            var diamsq = diam * diam;
 
-            for (int x = 0; x < radius; x++)
+            for (var x = 0; x < radius; x++)
             {
-                for (int y = 0; y < radius; y++)
+                for (var y = 0; y < radius; y++)
                 {
-                    int index = x * radius + y;
-                    Vector2 pos = new Vector2(x - diam, y - diam);
+                    var index = x * radius + y;
+                    var pos = new Vector2(x - diam, y - diam);
                     if (pos.LengthSquared() <= diamsq)
                     {
                         colorData[index] = Color.White;
