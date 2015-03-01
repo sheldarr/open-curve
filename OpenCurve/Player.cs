@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
 
     public class Player
     {
@@ -17,9 +16,9 @@
         public float RotationSpeed { get; set; }
         public int Size { get; set; }
 
-        public Player(Color playerColor)
+        public Player()
         {
-            Color = playerColor;
+            Color = Color.Red;
 
             Position = new Vector2(0, 0);
             PreviousPositions = new List<Vector2>();

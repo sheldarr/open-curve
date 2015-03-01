@@ -36,6 +36,9 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\Board.cs" />
+    <Compile Include="Engine\GameOptions.cs" />
+    <Compile Include="Engine\GameType.cs" />
     <Compile Include="OpenCurveGame.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
@@ -54,10 +57,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Content\" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="Content\GameFont.spritefont" />
+    <None Include="Content\GameFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

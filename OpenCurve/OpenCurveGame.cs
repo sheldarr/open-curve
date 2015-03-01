@@ -5,8 +5,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace OpenCurve
 {
-    using System.Linq;
-
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -32,15 +30,17 @@ namespace OpenCurve
         /// </summary>
         protected override void Initialize()
         {
-            var player = new Player(Color.Yellow)
+            var player = new Player
             {
+                Color = Color.Yellow,
                 Position = new Vector2(100, 100)
             };
 
             Players.Add(player);
 
-            var player2 = new Player(Color.Red)
+            var player2 = new Player
             {
+                Color = Color.Red,
                 Position = new Vector2(400, 400)
             };
 
@@ -119,6 +119,11 @@ namespace OpenCurve
                     _spriteBatch.Draw(circle, position, player.Color);
                 }
             }
+
+            var font = Content.Load<SpriteFont>("GameFont");
+            var pos = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+
+            _spriteBatch.DrawString(font, "HEHESZKI", pos, Color.Red);
 
             _spriteBatch.End();
 
