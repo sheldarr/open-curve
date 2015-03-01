@@ -2,7 +2,7 @@
 {
     using Microsoft.Xna.Framework;
 
-    public class Board
+    public class Board : IBoard
     {
         private const int DefaultWidth = 640;
         private const int DefaultHeight = 480;
@@ -14,6 +14,9 @@
             Size = new Vector2(DefaultWidth, DefaultHeight);
         }
 
-
+        public void Draw()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

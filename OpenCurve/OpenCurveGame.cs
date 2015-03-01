@@ -17,7 +17,8 @@ namespace OpenCurve
 
         public OpenCurveGame()
         {
-            _graphicsDeviceManager = new GraphicsDeviceManager(this);
+            
+            _graphicsDeviceManager = new GraphicsDeviceManager(this) {PreferMultiSampling = true};
             Content.RootDirectory = "Content";
             Players = new List<Player>();
         }
