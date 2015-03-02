@@ -2,6 +2,6 @@
 {
     public interface IPlayerBonus
     {
-        void Apply();
+        void Apply(Player player);
     }
 }

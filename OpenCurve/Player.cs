@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Engine.Bonuses;
     using Microsoft.Xna.Framework;
 
     public class Player
@@ -12,9 +13,15 @@
         public List<Vector2> PreviousPositions { get; set; }
         public Vector2 Direction { get; set; }
 
+        public float BasicMoveSpeed { get; set; }
+        public float BasicRotationSpeed { get; set; }
+        public int BasicSize { get; set; }
+
         public float MoveSpeed { get; set; }
         public float RotationSpeed { get; set; }
         public int Size { get; set; }
+
+        public List<IPlayerBonus> PlayerBonuses { get; set; } 
 
         public Player()
         {
@@ -24,9 +31,18 @@
             PreviousPositions = new List<Vector2>();
             Direction = new Vector2(1, 1);
 
-            MoveSpeed = 1.0f;
-            RotationSpeed = 0.1f;
-            Size = 5;
+            BasicMoveSpeed = 1.0f;
+            BasicRotationSpeed = 0.1f;
+            BasicSize = 5;
+        }
+
+        public void ApplyBonuses()
+        {
+            MoveSpeed = BasicMoveSpeed;
+            RotationSpeed = BasicRotationSpeed;
+            Size = BasicSize;
+
+            PlayerBonuses.ForEach(pb => pb.Apply(this));
         }
 
         public void MakeMove()
@@ -42,12 +58,12 @@
 
         public void TurnLeft()
         {
-            Direction = CalculateNewDirection(-RotationSpeed);
+            Direction = CalculateNewDirection(-BasicRotationSpeed);
         }
 
         public void TurnRight()
         {
-            Direction = CalculateNewDirection(RotationSpeed);
+            Direction = CalculateNewDirection(BasicRotationSpeed);
         }
 
         private Vector2 CalculateNewDirection(float angle)

@@ -39,14 +39,21 @@
     <Compile Include="Engine\Board.cs" />
     <Compile Include="Engine\Bonuses\IMapBonus.cs" />
     <Compile Include="Engine\Bonuses\IPlayerBonus.cs" />
+    <Compile Include="Engine\Bonuses\SlowMapBonus.cs" />
+    <Compile Include="Engine\Bonuses\SlowPlayerBonus.cs" />
     <Compile Include="Engine\Bonuses\SpeedMapBonus.cs" />
     <Compile Include="Engine\Bonuses\SpeedPlayerBonus.cs" />
     <Compile Include="Engine\GameOptions.cs" />
+    <Compile Include="Engine\Gameplay.cs" />
     <Compile Include="Engine\GameType.cs" />
     <Compile Include="Engine\IBoard.cs" />
+    <Compile Include="Engine\IGameModule.cs" />
+    <Compile Include="Engine\MainMenu.cs" />
+    <Compile Include="Engine\TextureFactory.cs" />
     <Compile Include="OpenCurveGame.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +77,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="Content\MainMenuFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\GameFont.spritefont" />
     <None Include="Content\GameFont.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

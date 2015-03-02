@@ -1,10 +1,10 @@
 ﻿namespace OpenCurve.Engine.Bonuses
 {
-    public class SpeedPlayerBonus : IPlayerBonus
+    public class SlowPlayerBonus : IPlayerBonus
     {
         public void Apply(Player player)
         {
-            player.MoveSpeed = player.MoveSpeed*1.5f;
+            player.MoveSpeed = player.MoveSpeed*0.75f;
         }
     }
 }

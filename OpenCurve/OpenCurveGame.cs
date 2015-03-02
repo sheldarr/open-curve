@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
-namespace OpenCurve
+﻿namespace OpenCurve
 {
-    using Engine.Bonuses;
+    using System.Collections.Generic;
+    using Engine;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+
+    public delegate void OnExit();
 
     /// <summary>
     /// This is the main type for your game
@@ -15,13 +15,18 @@ namespace OpenCurve
         private GraphicsDeviceManager _graphicsDeviceManager;
         private SpriteBatch _spriteBatch;
 
+        private MainMenu _mainMenu;
+        private Gameplay _gameplay;
+
+        private IGameModule _activeGameModule;
+
         private List<Player> Players { get; set; }
 
         public OpenCurveGame()
         {
-            _graphicsDeviceManager = new GraphicsDeviceManager(this) {PreferMultiSampling = true};
             Content.RootDirectory = "Content";
-            Players = new List<Player>();
+
+            _graphicsDeviceManager = new GraphicsDeviceManager(this) {PreferMultiSampling = true};
         }
 
         /// <summary>
@@ -32,21 +37,16 @@ namespace OpenCurve
         /// </summary>
         protected override void Initialize()
         {
-            var player = new Player
-            {
-                Color = Color.Yellow,
-                Position = new Vector2(100, 100)
-            };
+            _mainMenu = new MainMenu(Content, GraphicsDevice);
+            _gameplay = new Gameplay(Content, GraphicsDevice);
 
-            Players.Add(player);
+            _mainMenu.Initialize();
+            _gameplay.Initialize();
 
-            var player2 = new Player
-            {
-                Color = Color.Red,
-                Position = new Vector2(400, 400)
-            };
+            _mainMenu.Exit = MainMenuExit;
+            _gameplay.Exit = GameplayExit;
 
-            Players.Add(player2);
+            _activeGameModule = _mainMenu;
 
             base.Initialize();
         }
@@ -57,10 +57,10 @@ namespace OpenCurve
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            _mainMenu.LoadContent();
+            _gameplay.LoadContent();
         }
 
         /// <summary>
@@ -69,7 +69,8 @@ namespace OpenCurve
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            _mainMenu.UnloadContent();
+            _gameplay.UnloadContent();
         }
 
         /// <summary>
@@ -79,26 +80,8 @@ namespace OpenCurve
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            Players.ForEach(p => p.MakeMove());
-
-            foreach (var player in Players)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                {
-                    player.TurnLeft();
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                {
-                    player.TurnRight();
-                }
-                //if (Players.SelectMany(p => p.PreviousPositions).Any(pp => pp == player.Position))
-                //{
-                //}
-            }
-
+            _activeGameModule.Update(gameTime);
+           
             base.Update(gameTime);
         }
 
@@ -110,55 +93,19 @@ namespace OpenCurve
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             
-            _spriteBatch.Begin();
-
-            foreach (var player in Players)
-            {
-                var circle = CreateCircleText(player.Size);
-
-                foreach (var position in player.PreviousPositions)
-                {
-                    _spriteBatch.Draw(circle, position, player.Color);
-                }
-            }
-
-            var font = Content.Load<SpriteFont>("GameFont");
-            var pos = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
-
-            _spriteBatch.DrawString(font, "HEHESZKI", pos, Color.Red);
-
-            _spriteBatch.End();
+            _activeGameModule.Draw(gameTime);
 
             base.Draw(gameTime);
         }
 
-        Texture2D CreateCircleText(int radius)
+        public void MainMenuExit()
         {
-            var texture = new Texture2D(GraphicsDevice, radius, radius);
-            var colorData = new Color[radius * radius];
+            _activeGameModule = _gameplay;
+        }
 
-            var diam = radius / 2f;
-            var diamsq = diam * diam;
-
-            for (var x = 0; x < radius; x++)
-            {
-                for (var y = 0; y < radius; y++)
-                {
-                    var index = x * radius + y;
-                    var pos = new Vector2(x - diam, y - diam);
-                    if (pos.LengthSquared() <= diamsq)
-                    {
-                        colorData[index] = Color.White;
-                    }
-                    else
-                    {
-                        colorData[index] = Color.Transparent;
-                    }
-                }
-            }
-
-            texture.SetData(colorData);
-            return texture;
+        public void GameplayExit()
+        {
+            _activeGameModule = _mainMenu;
         }
     }
 }
