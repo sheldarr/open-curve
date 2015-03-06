@@ -91,8 +91,6 @@
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            
             _activeGameModule.Draw(gameTime);
 
             base.Draw(gameTime);
@@ -100,11 +98,13 @@
 
         public void MainMenuExit()
         {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
             _activeGameModule = _gameplay;
         }
 
         public void GameplayExit()
         {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
             _activeGameModule = _mainMenu;
         }
     }

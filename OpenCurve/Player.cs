@@ -33,7 +33,7 @@
 
             BasicMoveSpeed = 1.0f;
             BasicRotationSpeed = 0.1f;
-            BasicSize = 5;
+            BasicSize = 4;
         }
 
         public void ApplyBonuses()
@@ -58,12 +58,12 @@
 
         public void TurnLeft()
         {
-            Direction = CalculateNewDirection(-BasicRotationSpeed);
+            Direction = Vector2.Normalize(CalculateNewDirection(-BasicRotationSpeed));
         }
 
         public void TurnRight()
         {
-            Direction = CalculateNewDirection(BasicRotationSpeed);
+            Direction = Vector2.Normalize(CalculateNewDirection(BasicRotationSpeed));
         }
 
         private Vector2 CalculateNewDirection(float angle)

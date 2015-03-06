@@ -31,6 +31,7 @@
             }
 
             texture.SetData(colorData);
+            
             return texture;
         }
     }

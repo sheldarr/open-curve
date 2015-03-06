@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Bonuses;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
@@ -14,6 +15,7 @@
         public GraphicsDevice GraphicsDevice { get; set; }
 
         public List<Player> Players { get; private set; }
+        public Board Board { get; set; }
 
         private SpriteBatch SpriteBatch { get; set; }
 
@@ -26,6 +28,12 @@
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             
             Players = new List<Player>();
+            Board = new Board
+            {
+                SpriteBatch = SpriteBatch,
+                Players = Players,
+                Size = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth - 160, GraphicsDevice.PresentationParameters.BackBufferHeight - 80)
+            };
         }
 
         public void Initialize()
@@ -80,26 +88,21 @@
                     player.TurnRight();
                 }
 
+                var p = player.PreviousPositions.First();
+                var distance = Math.Sqrt(Math.Pow(p.X - player.Position.X, 2) + Math.Pow(p.Y - player.Position.Y, 2));
+
+                if (distance <= player.Size/2)
+                {
+                    var i = 1;
+                }
+
                 player.ApplyBonuses();
             }
         }
 
         public void Draw(GameTime gameTime)
         {
-            SpriteBatch.Begin();
-
-            foreach (var player in Players)
-            {
-                var playerTexture = TextureFactory.CreateCircleTexture(GraphicsDevice, player.BasicSize);
-
-                foreach (var position in player.PreviousPositions)
-                {
-                    SpriteBatch.Draw(playerTexture, position, player.Color);
-                }
-            }
-
-            SpriteBatch.End();
-
+            Board.Draw();
         }
     }
 }

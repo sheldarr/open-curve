@@ -49,6 +49,7 @@
     <Compile Include="Engine\IBoard.cs" />
     <Compile Include="Engine\IGameModule.cs" />
     <Compile Include="Engine\MainMenu.cs" />
+    <Compile Include="Engine\Primitives\OpenPrimitives.cs" />
     <Compile Include="Engine\TextureFactory.cs" />
     <Compile Include="OpenCurveGame.cs" />
     <Compile Include="Player.cs" />
