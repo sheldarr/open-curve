@@ -1,15 +1,13 @@
 ﻿namespace OpenCurve.Engine
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Bonuses;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
 
-    public class Gameplay : IGameModule
+    public class Gameplay : IGameComponent
     {
         public ContentManager Content { get; set; }
         public GraphicsDevice GraphicsDevice { get; set; }
@@ -18,6 +16,7 @@
         public Board Board { get; set; }
 
         private SpriteBatch SpriteBatch { get; set; }
+        private FpsCounter FpsCounter { get; set; }
 
         public OnExit Exit;
 
@@ -28,16 +27,16 @@
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             
             Players = new List<Player>();
-            Board = new Board
+            Board = new Board(SpriteBatch, new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth - 160, GraphicsDevice.PresentationParameters.BackBufferHeight - 80))
             {
-                SpriteBatch = SpriteBatch,
-                Players = Players,
-                Size = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth - 160, GraphicsDevice.PresentationParameters.BackBufferHeight - 80)
+                Players = Players
             };
         }
 
         public void Initialize()
         {
+            FpsCounter = new FpsCounter(Content, SpriteBatch);
+
             var player = new Player
             {
                 Color = Color.Yellow,
@@ -53,7 +52,7 @@
             var player2 = new Player
             {
                 Color = Color.Red,
-                Position = new Vector2(400, 400),
+                Position = new Vector2(500, 300),
                 PlayerBonuses = new List<IPlayerBonus>()
             };
 
@@ -62,6 +61,7 @@
 
         public void LoadContent()
         {
+            FpsCounter.LoadContent();
         }
 
         public void UnloadContent()
@@ -75,7 +75,8 @@
                 Exit();
             }
 
-            Players.ForEach(p => p.MakeMove());
+            Board.Update(gameTime);
+            FpsCounter.Update(gameTime);
 
             foreach (var player in Players)
             {
@@ -88,13 +89,7 @@
                     player.TurnRight();
                 }
 
-                var p = player.PreviousPositions.First();
-                var distance = Math.Sqrt(Math.Pow(p.X - player.Position.X, 2) + Math.Pow(p.Y - player.Position.Y, 2));
-
-                if (distance <= player.Size/2)
-                {
-                    var i = 1;
-                }
+                //var distance = Math.Sqrt(Math.Pow(p.X - player.Position.X, 2) + Math.Pow(p.Y - player.Position.Y, 2));
 
                 player.ApplyBonuses();
             }
@@ -102,7 +97,8 @@
 
         public void Draw(GameTime gameTime)
         {
-            Board.Draw();
+            Board.Draw(gameTime);
+            FpsCounter.Draw(gameTime);
         }
     }
 }

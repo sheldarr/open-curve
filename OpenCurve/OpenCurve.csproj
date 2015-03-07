@@ -43,11 +43,11 @@
     <Compile Include="Engine\Bonuses\SlowPlayerBonus.cs" />
     <Compile Include="Engine\Bonuses\SpeedMapBonus.cs" />
     <Compile Include="Engine\Bonuses\SpeedPlayerBonus.cs" />
+    <Compile Include="Engine\FpsCounter.cs" />
     <Compile Include="Engine\GameOptions.cs" />
     <Compile Include="Engine\Gameplay.cs" />
     <Compile Include="Engine\GameType.cs" />
-    <Compile Include="Engine\IBoard.cs" />
-    <Compile Include="Engine\IGameModule.cs" />
+    <Compile Include="Engine\IGameComponent.cs" />
     <Compile Include="Engine\MainMenu.cs" />
     <Compile Include="Engine\Primitives\OpenPrimitives.cs" />
     <Compile Include="Engine\TextureFactory.cs" />

@@ -10,7 +10,6 @@
         public Color Color { get; set; }
 
         public Vector2 Position { get; set; }
-        public List<Vector2> PreviousPositions { get; set; }
         public Vector2 Direction { get; set; }
 
         public float BasicMoveSpeed { get; set; }
@@ -21,6 +20,8 @@
         public float RotationSpeed { get; set; }
         public int Size { get; set; }
 
+        public bool IsAlive { get; set; }
+
         public List<IPlayerBonus> PlayerBonuses { get; set; } 
 
         public Player()
@@ -28,12 +29,13 @@
             Color = Color.Red;
 
             Position = new Vector2(0, 0);
-            PreviousPositions = new List<Vector2>();
             Direction = new Vector2(1, 1);
 
             BasicMoveSpeed = 1.0f;
             BasicRotationSpeed = 0.1f;
             BasicSize = 4;
+
+            IsAlive = true;
         }
 
         public void ApplyBonuses()
@@ -52,7 +54,6 @@
 
             var positionOffsetVector = new Vector2(positionOffsetX, positionOffsetY);
 
-            PreviousPositions.Add(Position);
             Position += positionOffsetVector;
         }
 

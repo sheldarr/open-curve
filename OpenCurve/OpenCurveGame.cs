@@ -4,6 +4,7 @@
     using Engine;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using IGameComponent = Engine.IGameComponent;
 
     public delegate void OnExit();
 
@@ -18,7 +19,7 @@
         private MainMenu _mainMenu;
         private Gameplay _gameplay;
 
-        private IGameModule _activeGameModule;
+        private IGameComponent _activeGameComponent;
 
         private List<Player> Players { get; set; }
 
@@ -46,7 +47,7 @@
             _mainMenu.Exit = MainMenuExit;
             _gameplay.Exit = GameplayExit;
 
-            _activeGameModule = _mainMenu;
+            _activeGameComponent = _mainMenu;
 
             base.Initialize();
         }
@@ -80,7 +81,7 @@
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            _activeGameModule.Update(gameTime);
+            _activeGameComponent.Update(gameTime);
            
             base.Update(gameTime);
         }
@@ -91,7 +92,7 @@
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            _activeGameModule.Draw(gameTime);
+            _activeGameComponent.Draw(gameTime);
 
             base.Draw(gameTime);
         }
@@ -99,13 +100,13 @@
         public void MainMenuExit()
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            _activeGameModule = _gameplay;
+            _activeGameComponent = _gameplay;
         }
 
         public void GameplayExit()
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            _activeGameModule = _mainMenu;
+            _activeGameComponent = _mainMenu;
         }
     }
 }

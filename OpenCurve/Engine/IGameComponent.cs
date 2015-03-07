@@ -2,7 +2,7 @@
 {
     using Microsoft.Xna.Framework;
 
-    public interface IGameModule
+    public interface IGameComponent
     {
         void Initialize();
         void LoadContent();

@@ -5,7 +5,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
 
-    public class MainMenu : IGameModule
+    public class MainMenu : IGameComponent
     {
         private ContentManager Content { get; set; }
         private GraphicsDevice GraphicsDevice { get; set; }
