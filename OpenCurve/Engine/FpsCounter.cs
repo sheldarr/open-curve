@@ -5,7 +5,7 @@
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
 
-    public class FpsCounter : IGameComponent
+    public class FpsCounter : IOpenCurveComponent
     {
         private readonly ContentManager _content;
         private readonly SpriteBatch _spriteBatch;

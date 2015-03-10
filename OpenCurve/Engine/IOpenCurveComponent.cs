@@ -2,7 +2,7 @@
 {
     using Microsoft.Xna.Framework;
 
-    public interface IGameComponent
+    public interface IOpenCurveComponent
     {
         void Initialize();
         void LoadContent();

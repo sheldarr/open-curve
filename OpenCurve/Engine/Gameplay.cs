@@ -1,13 +1,14 @@
 ﻿namespace OpenCurve.Engine
 {
     using System.Collections.Generic;
+    using System.Dynamic;
     using Bonuses;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
 
-    public class Gameplay : IGameComponent
+    public class Gameplay : IOpenCurveComponent
     {
         public ContentManager Content { get; set; }
         public GraphicsDevice GraphicsDevice { get; set; }
@@ -27,7 +28,14 @@
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             
             Players = new List<Player>();
-            Board = new Board(SpriteBatch, new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth - 160, GraphicsDevice.PresentationParameters.BackBufferHeight - 80))
+
+            var boardSize = new BoardSize
+            {
+                Width = GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Height = GraphicsDevice.PresentationParameters.BackBufferHeight
+            };
+
+            Board = new Board(SpriteBatch, content, boardSize)
             {
                 Players = Players
             };
@@ -35,6 +43,7 @@
 
         public void Initialize()
         {
+            Board.Initialize();
             FpsCounter = new FpsCounter(Content, SpriteBatch);
 
             var player = new Player
@@ -61,11 +70,14 @@
 
         public void LoadContent()
         {
+            Board.LoadContent();
             FpsCounter.LoadContent();
         }
 
         public void UnloadContent()
         {
+            Board.UnloadContent();
+            FpsCounter.UnloadContent();
         }
 
         public void Update(GameTime gameTime)
@@ -88,8 +100,6 @@
                 {
                     player.TurnRight();
                 }
-
-                //var distance = Math.Sqrt(Math.Pow(p.X - player.Position.X, 2) + Math.Pow(p.Y - player.Position.Y, 2));
 
                 player.ApplyBonuses();
             }

@@ -6,8 +6,6 @@ namespace OpenPrimitives
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
-    /// <summary>
-    /// </summary>
     public static class Primitives2D
     {
         #region Private Members

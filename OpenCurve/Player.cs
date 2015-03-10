@@ -9,6 +9,7 @@
     {
         public Color Color { get; set; }
 
+        public IList<Vector2> PreviousPositions { get; set; } 
         public Vector2 Position { get; set; }
         public Vector2 Direction { get; set; }
 
@@ -28,6 +29,7 @@
         {
             Color = Color.Red;
 
+            PreviousPositions = new List<Vector2>();
             Position = new Vector2(0, 0);
             Direction = new Vector2(1, 1);
 
@@ -54,6 +56,7 @@
 
             var positionOffsetVector = new Vector2(positionOffsetX, positionOffsetY);
 
+            PreviousPositions.Add(Position);
             Position += positionOffsetVector;
         }
 

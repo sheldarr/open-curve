@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\Board.cs" />
+    <Compile Include="Engine\BoardSize.cs" />
     <Compile Include="Engine\Bonuses\IMapBonus.cs" />
     <Compile Include="Engine\Bonuses\IPlayerBonus.cs" />
     <Compile Include="Engine\Bonuses\SlowMapBonus.cs" />
@@ -71,6 +72,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\player.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Icon.ico" />
     <Content Include="SDL.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -5,7 +5,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
 
-    public class MainMenu : IGameComponent
+    public class MainMenu : IOpenCurveComponent
     {
         private ContentManager Content { get; set; }
         private GraphicsDevice GraphicsDevice { get; set; }
