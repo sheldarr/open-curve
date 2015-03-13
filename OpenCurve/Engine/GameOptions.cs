@@ -4,6 +4,7 @@
 
     public class GameOptions
     {
+        public BoardSize BoardSize { get; set; }
         public ICollection<PlayerOptions> PlayerOptions { get; set; }
     }
 }

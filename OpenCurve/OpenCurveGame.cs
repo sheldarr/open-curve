@@ -72,6 +72,11 @@
         {
             var gameOptions = new GameOptions
             {
+                BoardSize = new BoardSize
+                {
+                    Width = GraphicsDevice.PresentationParameters.BackBufferWidth,
+                    Height = GraphicsDevice.PresentationParameters.BackBufferHeight
+                },
                 PlayerOptions = new List<PlayerOptions>
                 {
                     new PlayerOptions

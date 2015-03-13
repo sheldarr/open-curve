@@ -15,7 +15,7 @@
         public GraphicsDevice GraphicsDevice { get; set; }
 
         public List<Player> Players { get; private set; }
-        public readonly BoardSize BoardSize;
+        public BoardSize BoardSize;
 
         private bool[,] _boardField;
         private Texture2D _playerTexture;
@@ -34,14 +34,6 @@
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             
             Players = new List<Player>();
-
-            BoardSize = new BoardSize
-            {
-                Width = GraphicsDevice.PresentationParameters.BackBufferWidth,
-                Height = GraphicsDevice.PresentationParameters.BackBufferHeight
-            };
-
-            _boardField = new bool[BoardSize.Width, BoardSize.Height];
         }
 
         public void Initialize()
@@ -131,6 +123,7 @@
 
         public void Reset(GameOptions gameOptions)
         {
+            BoardSize = gameOptions.BoardSize;
             Players.Clear();
 
             _boardField = new bool[BoardSize.Width, BoardSize.Height];
@@ -188,12 +181,11 @@
             {
                 for (var y = (int)directionPosition.Y - areaRadius; y < (int)directionPosition.Y + areaRadius; y++)
                 {
-                    if (x > 0 && y > 0 && x < BoardSize.Width && y < BoardSize.Height)
+                    if (x <= 0 || y <= 0 || x >= BoardSize.Width || y >= BoardSize.Height) continue;
+
+                    if (_boardField[x, y])
                     {
-                        if (_boardField[x, y])
-                        {
-                            player.IsAlive = false;
-                        }
+                        player.IsAlive = false;
                     }
                 }
             }
