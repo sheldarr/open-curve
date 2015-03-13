@@ -1,7 +1,6 @@
 ﻿namespace OpenCurve.Engine
 {
     using System.Collections.Generic;
-    using System.Dynamic;
     using Bonuses;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;

@@ -48,7 +48,7 @@
     <Compile Include="Engine\GameOptions.cs" />
     <Compile Include="Engine\Gameplay.cs" />
     <Compile Include="Engine\GameType.cs" />
-    <Compile Include="Engine\IGameComponent.cs" />
+    <Compile Include="Engine\IOpenCurveComponent.cs" />
     <Compile Include="Engine\MainMenu.cs" />
     <Compile Include="Engine\Primitives\OpenPrimitives.cs" />
     <Compile Include="Engine\TextureFactory.cs" />

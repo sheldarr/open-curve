@@ -61,22 +61,27 @@
 
         public void Draw(GameTime gameTime)
         {
-            _spriteBatch.GraphicsDevice.Clear(Color.CornflowerBlue);
+            _spriteBatch.GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
-
-            var boardRectangle = new Rectangle(0, 0, _boardSize.Width, _boardSize.Height);
-            _spriteBatch.DrawRectangle(boardRectangle, Color.DarkBlue, 4);
 
             foreach (var player in Players)
             {
                 foreach (var previousPosition in player.PreviousPositions)
                 {
-                    _spriteBatch.Draw(_playerTexture, previousPosition, null, player.Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);  
+                    _spriteBatch.Draw(_playerTexture, previousPosition - new Vector2(player.Size/2, player.Size/2), null, player.Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);  
                 }
 
-                var directionPosition = new Vector2(player.Position.X + player.Direction.X * player.Size * 2, player.Position.Y + player.Direction.Y * player.Size * 2);
-                _spriteBatch.Draw(_playerTexture, directionPosition, null, player.Color, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);  
+                var rightCrossVector = Vector3.Cross(new Vector3(player.Direction, 0), Vector3.UnitZ);
+                var leftCrossVector = Vector3.Cross(new Vector3(player.Direction, 0), -Vector3.UnitZ);
+
+                var directionPosition = new Vector2(player.Position.X + player.Direction.X * player.Size, player.Position.Y + player.Direction.Y * player.Size);
+                var leftPerpendicularDirection = new Vector2(player.Position.X + rightCrossVector.X * player.Size, player.Position.Y + rightCrossVector.Y * player.Size);
+                var rightPerpendicularDirection = new Vector2(player.Position.X + leftCrossVector.X * player.Size, player.Position.Y + leftCrossVector.Y * player.Size);
+                
+                _spriteBatch.Draw(_playerTexture, directionPosition, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
+                _spriteBatch.Draw(_playerTexture, leftPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
+                _spriteBatch.Draw(_playerTexture, rightPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);  
             }
             _spriteBatch.End();
         }
