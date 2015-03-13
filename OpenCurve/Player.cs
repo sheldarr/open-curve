@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Engine.Bonuses;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Input;
 
     public class Player
     {
@@ -23,12 +24,18 @@
 
         public bool IsAlive { get; set; }
 
-        public List<IPlayerBonus> PlayerBonuses { get; set; } 
+        public List<IPlayerBonus> PlayerBonuses { get; set; }
+        
+        public Keys MoveLeftKey { get; set; }
+        public Keys MoveRightKey { get; set; }
+        public bool PadController { get; set; }
+        public PlayerIndex PlayerIndex { get; set; }
 
         public Player()
         {
             Color = Color.Red;
 
+            PlayerBonuses = new List<IPlayerBonus>();
             PreviousPositions = new List<Vector2>();
             Position = new Vector2(0, 0);
             Direction = new Vector2(1, 1);

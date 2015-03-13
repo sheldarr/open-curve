@@ -1,7 +1,10 @@
 ﻿namespace OpenCurve
 {
+    using System.Collections.Generic;
     using Engine;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Input;
+    using OpenTK.Input;
 
     public delegate void OnExit();
 
@@ -10,7 +13,7 @@
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
 
         private MainMenu _mainMenu;
-        private Gameplay _gameplay;
+        private Board _board;
 
         private IOpenCurveComponent _activeOpenCurveComponent;
 
@@ -24,18 +27,17 @@
         protected override void Initialize()
         {
             _mainMenu = new MainMenu(Content, GraphicsDevice);
-            _gameplay = new Gameplay(Content, GraphicsDevice);
+            _board = new Board(Content, GraphicsDevice);
 
             _mainMenu.Initialize();
-            _gameplay.Initialize();
+            _board.Initialize();
 
             _mainMenu.Exit = MainMenuExit;
-            _gameplay.Exit = GameplayExit;
+            _board.Exit = GameplayExit;
 
             _activeOpenCurveComponent = _mainMenu;
 
             _graphicsDeviceManager.GraphicsDevice.PresentationParameters.MultiSampleCount = 16;
-
 
             base.Initialize();
         }
@@ -43,13 +45,13 @@
         protected override void LoadContent()
         {
             _mainMenu.LoadContent();
-            _gameplay.LoadContent();
+            _board.LoadContent();
         }
 
         protected override void UnloadContent()
         {
             _mainMenu.UnloadContent();
-            _gameplay.UnloadContent();
+            _board.UnloadContent();
         }
 
         protected override void Update(GameTime gameTime)
@@ -68,8 +70,32 @@
 
         public void MainMenuExit()
         {
+            var gameOptions = new GameOptions
+            {
+                PlayerOptions = new List<PlayerOptions>
+                {
+                    new PlayerOptions
+                    {
+                        Color = Color.Red,
+                        MoveLeftKey = Keys.A,
+                        MoveRightKey = Keys.D,
+                        PadController = false,
+                        PlayerIndex = PlayerIndex.One
+                    },
+                    new PlayerOptions
+                    {
+                        Color = Color.Blue,
+                        MoveLeftKey = Keys.Left,
+                        MoveRightKey = Keys.Right,
+                        PadController = false,
+                        PlayerIndex = PlayerIndex.Two
+                    }
+                }
+            };
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            _activeOpenCurveComponent = _gameplay;
+            _board.Reset(gameOptions);
+            _activeOpenCurveComponent = _board;
         }
 
         public void GameplayExit()
