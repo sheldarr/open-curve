@@ -26,6 +26,9 @@
         private Random Random { get; set; }
 
         public OnExit Exit;
+        private SpriteFont _gameSpriteFont;
+
+        private int Round { get; set; }
 
         public Board(ContentManager content, GraphicsDevice graphicsDevice)
         {
@@ -45,6 +48,7 @@
         public void LoadContent()
         {
             _playerTexture = Content.Load<Texture2D>("player");
+            _gameSpriteFont = Content.Load<SpriteFont>("MainMenuFont");
             FpsCounter.LoadContent();
         }
 
@@ -95,13 +99,12 @@
 
                 player.MakeMove();
 
-                if (player.Position.Y <= 0 || player.Position.Y >= BoardSize.Height
-                    || player.Position.X <= 0 || player.Position.X >= BoardSize.Width)
-                {
-                    player.IsAlive = false;
-                }
-
                 CheckCollisions(player);
+            }
+
+            if (Players.Count(p => p.IsAlive) < 2)
+            {
+                NextRound();
             }
         }
 
@@ -113,8 +116,15 @@
 
             SpriteBatch.Begin();
 
-            foreach (var player in Players)
+            var pointsPosition = new Vector2(120, 0);
+
+            var orderedPlayers = Players.OrderByDescending(p => p.Points);
+
+            foreach (var player in orderedPlayers)
             {
+                SpriteBatch.DrawString(_gameSpriteFont, player.Points.ToString(), pointsPosition, player.Color);
+                pointsPosition += new Vector2(30, 0);
+
                 foreach (var previousPosition in player.PreviousPositions)
                 {
                     SpriteBatch.Draw(_playerTexture, previousPosition - new Vector2(player.Size / 2, player.Size / 2), null, player.Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
@@ -187,8 +197,30 @@
 
         private void CheckCollisions(Player player)
         {
+            if (CheckCollisionsWithBoard(player) || CheckCollisionWithOtherPlayers(player))
+            {
+                player.IsAlive = false;
+
+                foreach (var otherAlivePlayers in Players.Where(p => p != player && p.IsAlive))
+                {
+                    otherAlivePlayers.Points++;
+                }
+            }
+        }
+
+        private bool CheckCollisionsWithBoard(Player player)
+        {
+            return player.Position.Y <= 0 
+                || player.Position.X <= 0 
+                || player.Position.Y >= BoardSize.Height
+                || player.Position.X >= BoardSize.Width;
+        }
+
+        private bool CheckCollisionWithOtherPlayers(Player player)
+        {
             var areaRadius = (int)Math.Round((double)player.Size / 2);
-            var directionPosition = new Vector2(player.Position.X + player.Direction.X * player.Size * 2, player.Position.Y + player.Direction.Y * player.Size * 2);
+            var directionPosition = new Vector2(player.Position.X + player.Direction.X * player.Size * 2,
+                player.Position.Y + player.Direction.Y * player.Size * 2);
 
             for (var x = (int)directionPosition.X - areaRadius; x < (int)directionPosition.X + areaRadius; x++)
             {
@@ -198,10 +230,25 @@
 
                     if (_boardField[x, y])
                     {
-                        player.IsAlive = false;
+                        return true;
                     }
                 }
             }
+
+            return false;
+        }
+
+        private void NextRound()
+        {
+            Round++;
+
+            Players.ForEach(p => p.IsAlive = true);
+            Players.ForEach(p => p.PreviousPositions.Clear());
+
+            _boardField = new bool[BoardSize.Width, BoardSize.Height];
+
+            RandomizePlayersPositions();
+            RandomizePlayersDirection();
         }
     }
 }

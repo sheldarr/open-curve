@@ -5,7 +5,6 @@
     using Engine;
     using Engine.Bonuses;
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Input;
 
     public class Player
     {
@@ -22,6 +21,8 @@
         public float MoveSpeed { get; set; }
         public float RotationSpeed { get; set; }
         public int Size { get; set; }
+
+        public int Points { get; set; }
 
         public bool IsAlive { get; set; }
 

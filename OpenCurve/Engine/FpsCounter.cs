@@ -54,8 +54,7 @@
 
             _spriteBatch.Begin();
 
-            _spriteBatch.DrawString(_spriteFont, fps, new Vector2(33, 33), Color.Black);
-            _spriteBatch.DrawString(_spriteFont, fps, new Vector2(32, 32), Color.White);
+            _spriteBatch.DrawString(_spriteFont, fps, new Vector2(4, 0), Color.White);
 
             _spriteBatch.End();
         }

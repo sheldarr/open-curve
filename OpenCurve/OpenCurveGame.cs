@@ -1,10 +1,7 @@
 ﻿namespace OpenCurve
 {
-    using System.Collections.Generic;
     using Engine;
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Input;
-    using OpenTK.Input;
 
     public delegate void OnExit();
 
