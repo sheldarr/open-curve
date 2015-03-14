@@ -64,15 +64,28 @@
 
             foreach (var player in Players)
             {
-                if (Keyboard.GetState().IsKeyDown(player.MoveLeftKey))
+                if (player.PlayerControls.PadController)
                 {
-                    player.TurnLeft();
+                    if (GamePad.GetState(player.PlayerControls.PlayerIndex).DPad.Left == ButtonState.Pressed)
+                    {
+                        player.TurnLeft();
+                    }
+                    if (GamePad.GetState(player.PlayerControls.PlayerIndex).DPad.Right == ButtonState.Pressed)
+                    {
+                        player.TurnRight();
+                    }
                 }
-                if (Keyboard.GetState().IsKeyDown(player.MoveRightKey))
+                else
                 {
-                    player.TurnRight();
+                    if (Keyboard.GetState().IsKeyDown(player.PlayerControls.MoveLeftKey))
+                    {
+                        player.TurnLeft();
+                    }
+                    if (Keyboard.GetState().IsKeyDown(player.PlayerControls.MoveRightKey))
+                    {
+                        player.TurnRight();
+                    }
                 }
-
                 player.ApplyBonuses();
             }
 

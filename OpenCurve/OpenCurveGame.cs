@@ -70,36 +70,8 @@
 
         public void MainMenuExit()
         {
-            var gameOptions = new GameOptions
-            {
-                BoardSize = new BoardSize
-                {
-                    Width = GraphicsDevice.PresentationParameters.BackBufferWidth,
-                    Height = GraphicsDevice.PresentationParameters.BackBufferHeight
-                },
-                PlayerOptions = new List<PlayerOptions>
-                {
-                    new PlayerOptions
-                    {
-                        Color = Color.Red,
-                        MoveLeftKey = Keys.A,
-                        MoveRightKey = Keys.D,
-                        PadController = false,
-                        PlayerIndex = PlayerIndex.One
-                    },
-                    new PlayerOptions
-                    {
-                        Color = Color.Blue,
-                        MoveLeftKey = Keys.Left,
-                        MoveRightKey = Keys.Right,
-                        PadController = false,
-                        PlayerIndex = PlayerIndex.Two
-                    }
-                }
-            };
-
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            _board.Reset(gameOptions);
+            _board.Reset(_mainMenu.GameOptions);
             _activeOpenCurveComponent = _board;
         }
 

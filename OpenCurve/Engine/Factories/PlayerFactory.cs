@@ -7,10 +7,7 @@
             return new Player
             {
                 Color = playerOptions.Color,
-                MoveLeftKey = playerOptions.MoveLeftKey,
-                MoveRightKey = playerOptions.MoveRightKey,
-                PadController = playerOptions.PadController,
-                PlayerIndex = playerOptions.PlayerIndex
+                PlayerControls = playerOptions.PlayerControls
             };
         }
     }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Engine;
     using Engine.Bonuses;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
@@ -25,11 +26,8 @@
         public bool IsAlive { get; set; }
 
         public List<IPlayerBonus> PlayerBonuses { get; set; }
-        
-        public Keys MoveLeftKey { get; set; }
-        public Keys MoveRightKey { get; set; }
-        public bool PadController { get; set; }
-        public PlayerIndex PlayerIndex { get; set; }
+
+        public PlayerControls PlayerControls { get; set; }
 
         public Player()
         {
