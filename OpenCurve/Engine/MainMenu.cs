@@ -32,10 +32,12 @@
 
             GameOptions = new GameOptions
             {
+                Fullscreen = true,
+                RoundLimit = 8,
                 BoardSize = new BoardSize
                 {
-                    Width = GraphicsDevice.PresentationParameters.BackBufferWidth,
-                    Height = GraphicsDevice.PresentationParameters.BackBufferHeight
+                    Width = GraphicsDevice.DisplayMode.Width,
+                    Height = GraphicsDevice.DisplayMode.Height
                 },
                 PlayerOptions = new List<PlayerOptions>()
             };
@@ -81,11 +83,30 @@
                     GameOptions.PlayerOptions.Remove(lastPlayerOptions);
                 }
             }
+            if (actualKeyboardState.IsKeyDown(Keys.Left) && LastKeyboardState.IsKeyUp(Keys.Left))
+            {
+                if (GameOptions.RoundLimit > 1)
+                {
+                    GameOptions.RoundLimit--;
+                }
+            }
+            if (actualKeyboardState.IsKeyDown(Keys.Right) && LastKeyboardState.IsKeyUp(Keys.Right))
+            {
+                GameOptions.RoundLimit++;
+            }
+            if (actualKeyboardState.IsKeyDown(Keys.F) && LastKeyboardState.IsKeyUp(Keys.F))
+            {
+                GameOptions.Fullscreen = !GameOptions.Fullscreen;
+            }
             if (actualKeyboardState.IsKeyDown(Keys.Enter))
             {
                 Exit();
             }
-
+            if (actualKeyboardState.IsKeyDown(Keys.Escape))
+            {
+                GameOptions.ExitGame = true;
+                Exit();
+            }
             LastKeyboardState = actualKeyboardState;
         }
 
@@ -105,21 +126,36 @@
 
             position += new Vector2(0, 40);
 
+            var fullscreen = String.Format("[F]ullscreen: {0}", GameOptions.Fullscreen);
+            SpriteBatch.DrawString(_menuSpriteFont, fullscreen, position, Color.CornflowerBlue);
+
+            position += new Vector2(0, 40);
+
+            var boardSize = String.Format("Board size: {0}x{1}", GameOptions.BoardSize.Width, GameOptions.BoardSize.Height);
+            SpriteBatch.DrawString(_menuSpriteFont, boardSize, position, Color.CornflowerBlue);
+
+            position += new Vector2(0, 40);
+
+            var roundLimit = String.Format("Round limit: {0}", GameOptions.RoundLimit);
+            SpriteBatch.DrawString(_menuSpriteFont, roundLimit, position, Color.CornflowerBlue);
+
+            position += new Vector2(0, 40);
+
             var playerIndex = 1;
             foreach (var playerOptions in GameOptions.PlayerOptions)
             {
                 position += new Vector2(0, 40);
-                string playerInfo = String.Empty;
+                string playerInfo;
 
                 if (playerOptions.PlayerControls.PadController)
                 {
-                    playerInfo = String.Format("{0}. Player controls gamepad[{1}]", playerIndex, playerOptions.PlayerControls.PlayerIndex);
-                    
+                    playerInfo = String.Format("{0}. GamePad player [{1}]", playerIndex, playerOptions.PlayerControls.PlayerIndex);
                 }
                 else
                 {
-                    playerInfo = String.Format("{0}. Player controls [{1}][{2}]", playerIndex, playerOptions.PlayerControls.MoveLeftKey, playerOptions.PlayerControls.MoveRightKey);
+                    playerInfo = String.Format("{0}. Keyboard player [{1}][{2}]", playerIndex, playerOptions.PlayerControls.MoveLeftKey, playerOptions.PlayerControls.MoveRightKey);
                 }
+
                 SpriteBatch.DrawString(_menuSpriteFont, playerInfo, position, playerOptions.Color);
 
                 playerIndex++;

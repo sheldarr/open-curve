@@ -28,7 +28,8 @@
         public OnExit Exit;
         private SpriteFont _gameSpriteFont;
 
-        private int Round { get; set; }
+        private int ActualRound { get; set; }
+        private int RoundLimit { get; set; }
 
         public Board(ContentManager content, GraphicsDevice graphicsDevice)
         {
@@ -59,7 +60,7 @@
 
         public void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.F1))
             {
                 Exit();
             }
@@ -146,7 +147,9 @@
 
         public void Reset(GameOptions gameOptions)
         {
+            RoundLimit = gameOptions.RoundLimit;
             BoardSize = gameOptions.BoardSize;
+            ActualRound = 1;
             Players.Clear();
 
             _boardField = new bool[BoardSize.Width, BoardSize.Height];
@@ -240,7 +243,12 @@
 
         private void NextRound()
         {
-            Round++;
+            ActualRound++;
+
+            if (ActualRound > RoundLimit)
+            {
+                Exit();
+            }
 
             Players.ForEach(p => p.IsAlive = true);
             Players.ForEach(p => p.PreviousPositions.Clear());
