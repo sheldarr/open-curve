@@ -116,11 +116,10 @@
         {
             SpriteBatch.GraphicsDevice.Clear(Color.Black);
 
-            FpsCounter.Draw(gameTime);
 
             SpriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.LinearClamp, null, null);
 
-            var pointsPosition = new Vector2(120, 0);
+            var pointsPosition = new Vector2(160, 0);
 
             var orderedPlayers = Players.OrderByDescending(p => p.Points);
 
@@ -147,7 +146,16 @@
                 SpriteBatch.Draw(_playerTexture, leftPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
                 SpriteBatch.Draw(_playerTexture, rightPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
             }
+
+            var roundPosition = new Vector2(4, 0);
+            var round = String.Format("Round {0} / {1}", ActualRound, RoundLimit);
+
+            SpriteBatch.DrawString(_gameSpriteFont, round, roundPosition, Color.White);
+
             SpriteBatch.End();
+
+            FpsCounter.Draw(gameTime);
+
         }
 
         public void Reset(GameOptions gameOptions)

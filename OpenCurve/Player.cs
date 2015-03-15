@@ -71,7 +71,7 @@
                 if (GapTime < TimeSpan.FromSeconds(0))
                 {
                     Gap = false;
-                    GapTime = TimeSpan.FromSeconds(0.35);
+                    GapTime = TimeSpan.FromSeconds(0.2);
                 }
             }
             else
