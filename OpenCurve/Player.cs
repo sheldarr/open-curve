@@ -43,7 +43,7 @@
             Position = new Vector2(0, 0);
             Direction = new Vector2(1, 1);
 
-            BasicMoveSpeed = 1.0f;
+            BasicMoveSpeed = 2.0f;
             BasicRotationSpeed = 0.1f;
             BasicSize = 4;
 
