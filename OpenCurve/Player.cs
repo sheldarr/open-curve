@@ -30,6 +30,10 @@
 
         public PlayerControls PlayerControls { get; set; }
 
+        public TimeSpan GapDelay { get; set; }
+        public TimeSpan GapTime { get; set; }
+        public Boolean Gap { get; set; }
+
         public Player()
         {
             Color = Color.Red;
@@ -43,6 +47,10 @@
             BasicRotationSpeed = 0.1f;
             BasicSize = 4;
 
+            GapDelay = TimeSpan.FromSeconds(3);
+            GapTime = TimeSpan.FromSeconds(1.5);
+            Gap = true;
+
             IsAlive = true;
         }
 
@@ -55,14 +63,37 @@
             PlayerBonuses.ForEach(pb => pb.Apply(this));
         }
 
-        public void MakeMove()
+        public void MakeMove(GameTime gameTime)
         {
+            if (Gap)
+            {
+                GapTime -= gameTime.ElapsedGameTime;
+                if (GapTime < TimeSpan.FromSeconds(0))
+                {
+                    Gap = false;
+                    GapTime = TimeSpan.FromSeconds(0.35);
+                }
+            }
+            else
+            {
+                GapDelay -= gameTime.ElapsedGameTime;
+                if (GapDelay < TimeSpan.FromSeconds(0))
+                {
+                    Gap = true;
+                    GapDelay = TimeSpan.FromSeconds(3);
+                }
+            }
+
             var positionOffsetX = Direction.X*MoveSpeed;
             var positionOffsetY = Direction.Y*MoveSpeed;
 
             var positionOffsetVector = new Vector2(positionOffsetX, positionOffsetY);
 
-            PreviousPositions.Add(Position);
+            if (!Gap)
+            {
+                PreviousPositions.Add(Position);
+            }
+
             Position += positionOffsetVector;
         }
 

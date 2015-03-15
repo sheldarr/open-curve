@@ -43,6 +43,7 @@
             };
 
             AddGamePadPlayers();
+            AddDefaultPlayers();
         }
 
         public void Initialize()
@@ -64,20 +65,11 @@
 
             if (actualKeyboardState.IsKeyDown(Keys.Up) && LastKeyboardState.IsKeyUp(Keys.Up))
             {
-                if (GameOptions.PlayerOptions.Count < MaxPlayers)
-                {
-                    var newPlayerOptions = new PlayerOptions
-                    {
-                        Color = NextColor(),
-                        PlayerControls = KeyboardControls(GameOptions.PlayerOptions.Count)
-                    };
-
-                    GameOptions.PlayerOptions.Add(newPlayerOptions);
-                }
+                AddKeyboardPlayer();
             }
             if (actualKeyboardState.IsKeyDown(Keys.Down) && LastKeyboardState.IsKeyUp(Keys.Down))
             {
-                if (GameOptions.PlayerOptions.Count > 0)
+                if (GameOptions.PlayerOptions.Count > 2)
                 {
                     var lastPlayerOptions = GameOptions.PlayerOptions.Last();
                     GameOptions.PlayerOptions.Remove(lastPlayerOptions);
@@ -225,6 +217,20 @@
             AddGamePadPlayer(PlayerIndex.Four);
         }
 
+        private void AddDefaultPlayers()
+        {
+            switch (GameOptions.PlayerOptions.Count)
+            {
+                case(0):
+                    AddKeyboardPlayer();
+                    AddKeyboardPlayer();
+                    break;
+                case(1):
+                    AddKeyboardPlayer();
+                    break;
+            }
+        }
+
         private void AddGamePadPlayer(PlayerIndex playerIndex)
         {
             if (!GamePad.GetState(playerIndex).IsConnected)
@@ -239,6 +245,19 @@
             };
 
             GameOptions.PlayerOptions.Add(newPlayerOptions);
+        }
+        private void AddKeyboardPlayer()
+        {
+            if (GameOptions.PlayerOptions.Count < MaxPlayers)
+            {
+                var newPlayerOptions = new PlayerOptions
+                {
+                    Color = NextColor(),
+                    PlayerControls = KeyboardControls(GameOptions.PlayerOptions.Count)
+                };
+
+                GameOptions.PlayerOptions.Add(newPlayerOptions);
+            }
         }
     }
 }

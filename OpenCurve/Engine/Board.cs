@@ -96,9 +96,12 @@
 
             foreach (var player in Players.Where(p => p.IsAlive))
             {
-                FillBoard(player.Position, player.Size);
+                if (!player.Gap)
+                {
+                    FillBoard(player.Position, player.Size);
+                }
 
-                player.MakeMove();
+                player.MakeMove(gameTime);
 
                 CheckCollisions(player);
             }
@@ -115,7 +118,7 @@
 
             FpsCounter.Draw(gameTime);
 
-            SpriteBatch.Begin();
+            SpriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.LinearClamp, null, null);
 
             var pointsPosition = new Vector2(120, 0);
 
@@ -130,6 +133,8 @@
                 {
                     SpriteBatch.Draw(_playerTexture, previousPosition - new Vector2(player.Size / 2, player.Size / 2), null, player.Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
                 }
+
+                SpriteBatch.Draw(_playerTexture, player.Position - new Vector2(player.Size / 2, player.Size / 2), null, player.Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
 
                 var rightCrossVector = Vector3.Cross(new Vector3(player.Direction, 0), Vector3.UnitZ);
                 var leftCrossVector = Vector3.Cross(new Vector3(player.Direction, 0), -Vector3.UnitZ);
@@ -252,6 +257,9 @@
 
             Players.ForEach(p => p.IsAlive = true);
             Players.ForEach(p => p.PreviousPositions.Clear());
+            Players.ForEach(p => p.Gap = true);
+            Players.ForEach(p => p.GapDelay = TimeSpan.FromSeconds(3));
+            Players.ForEach(p => p.GapTime = TimeSpan.FromSeconds(1.5));
 
             _boardField = new bool[BoardSize.Width, BoardSize.Height];
 

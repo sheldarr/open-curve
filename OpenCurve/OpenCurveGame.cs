@@ -1,7 +1,6 @@
 ﻿namespace OpenCurve
 {
     using System.Linq;
-    using System.Runtime.Remoting.Messaging;
     using Engine;
     using Microsoft.Xna.Framework;
 
