@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Bonuses;
     using Factories;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
@@ -27,9 +28,11 @@
 
         public OnExit Exit;
         private SpriteFont _gameSpriteFont;
+        private Texture2D _speedBonusTexture;
 
         private int ActualRound { get; set; }
         private int RoundLimit { get; set; }
+
 
         public Board(ContentManager content, GraphicsDevice graphicsDevice)
         {
@@ -44,12 +47,14 @@
         {
             FpsCounter = new FpsCounter(Content, SpriteBatch);
             Random = new Random();
+
         }
 
         public void LoadContent()
         {
             _playerTexture = Content.Load<Texture2D>("player");
             _gameSpriteFont = Content.Load<SpriteFont>("MainMenuFont");
+            _speedBonusTexture = Content.Load<Texture2D>("speed");
             FpsCounter.LoadContent();
         }
 
@@ -116,7 +121,6 @@
         {
             SpriteBatch.GraphicsDevice.Clear(Color.Black);
 
-
             SpriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.LinearClamp, null, null);
 
             var pointsPosition = new Vector2(160, 0);
@@ -130,7 +134,7 @@
 
                 foreach (var previousPosition in player.PreviousPositions)
                 {
-                    SpriteBatch.Draw(_playerTexture, previousPosition - new Vector2(player.Size / 2, player.Size / 2), null, player.Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
+                    SpriteBatch.Draw(_playerTexture, previousPosition - new Vector2(player.Size / 2, player.Size / 2), null, player.Color, 0f, new Vector2(0, 0), 10f, SpriteEffects.None, 0);
                 }
 
                 SpriteBatch.Draw(_playerTexture, player.Position - new Vector2(player.Size / 2, player.Size / 2), null, player.Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
@@ -146,6 +150,7 @@
                 SpriteBatch.Draw(_playerTexture, leftPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
                 SpriteBatch.Draw(_playerTexture, rightPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
             }
+
 
             var roundPosition = new Vector2(4, 0);
             var round = String.Format("Round {0} / {1}", ActualRound, RoundLimit);

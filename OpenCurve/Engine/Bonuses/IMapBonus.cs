@@ -1,6 +1,6 @@
 ﻿namespace OpenCurve.Engine.Bonuses
 {
-    interface IMapBonus
+    public interface IMapBonus
     {
         void Draw();
     }
