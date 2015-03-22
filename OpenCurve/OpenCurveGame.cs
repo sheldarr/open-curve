@@ -45,7 +45,7 @@
             _graphicsDeviceManager.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             _graphicsDeviceManager.IsFullScreen = true;
             _graphicsDeviceManager.ApplyChanges();
-
+            
             base.Initialize();
         }
 

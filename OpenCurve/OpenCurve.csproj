@@ -43,6 +43,7 @@
     <Compile Include="Engine\Bonuses\SlowPlayerBonus.cs" />
     <Compile Include="Engine\Bonuses\SpeedMapBonus.cs" />
     <Compile Include="Engine\Bonuses\SpeedPlayerBonus.cs" />
+    <Compile Include="Engine\Extensions\PlayerExtensions.cs" />
     <Compile Include="Engine\Factories\PlayerFactory.cs" />
     <Compile Include="Engine\FpsCounter.cs" />
     <Compile Include="Engine\GameOptions.cs" />

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Extensions;
     using Factories;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
@@ -23,8 +24,6 @@
         private SpriteBatch SpriteBatch { get; set; }
         private FpsCounter FpsCounter { get; set; }
 
-        private Random Random { get; set; }
-
         public OnExit Exit;
         private SpriteFont _gameSpriteFont;
 
@@ -43,7 +42,6 @@
         public void Initialize()
         {
             FpsCounter = new FpsCounter(Content, SpriteBatch);
-            Random = new Random();
         }
 
         public void LoadContent()
@@ -178,21 +176,12 @@
 
         private void RandomizePlayersPositions()
         {
-            foreach (var player in Players)
-            {
-                var randomPosition = new Vector2(Random.Next(0, BoardSize.Width), Random.Next(0, BoardSize.Height));
-                player.Position = randomPosition;
-            }
+            Players.ForEach(p => p.RandomizePosition(BoardSize));
         }
 
         private void RandomizePlayersDirection()
         {
-            foreach (var player in Players)
-            {
-                var randomDirection = new Vector2((float)(Random.NextDouble() * 2 - 1), (float)(Random.NextDouble() * 2 - 1));
-                randomDirection.Normalize();
-                player.Direction = randomDirection;
-            }
+            Players.ForEach(p => p.RandomizeDirection());
         }
 
         private void FillBoard(Vector2 playerPosition, int playerSize)
