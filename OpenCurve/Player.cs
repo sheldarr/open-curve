@@ -5,6 +5,7 @@
     using Engine;
     using Engine.Bonuses;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Input;
 
     public class Player
     {
@@ -43,8 +44,8 @@
             Position = new Vector2(0, 0);
             Direction = new Vector2(1, 1);
 
-            BasicMoveSpeed = 2.0f;
-            BasicRotationSpeed = 0.1f;
+            BasicMoveSpeed = 60.0f;
+            BasicRotationSpeed = 8f;
             BasicSize = 4;
 
             GapDelay = TimeSpan.FromSeconds(3);
@@ -52,6 +53,41 @@
             Gap = true;
 
             IsAlive = true;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            ApplyBonuses();
+            HandleControls(gameTime);
+            MakeMove(gameTime);
+        }
+
+        public void HandleControls(GameTime gameTime)
+        {
+            var elapsedSeconds = gameTime.ElapsedGameTime.Milliseconds / 1000f;
+
+            if (PlayerControls.PadController)
+            {
+                if (GamePad.GetState(PlayerControls.PlayerIndex).DPad.Left == ButtonState.Pressed)
+                {
+                    TurnLeft(elapsedSeconds);
+                }
+                if (GamePad.GetState(PlayerControls.PlayerIndex).DPad.Right == ButtonState.Pressed)
+                {
+                    TurnRight(elapsedSeconds);
+                }
+            }
+            else
+            {
+                if (Keyboard.GetState().IsKeyDown(PlayerControls.MoveLeftKey))
+                {
+                    TurnLeft(elapsedSeconds);
+                }
+                if (Keyboard.GetState().IsKeyDown(PlayerControls.MoveRightKey))
+                {
+                    TurnRight(elapsedSeconds);
+                }
+            }
         }
 
         public void ApplyBonuses()
@@ -65,6 +101,7 @@
 
         public void MakeMove(GameTime gameTime)
         {
+            var elapsedSeconds = gameTime.ElapsedGameTime.Milliseconds / 1000f;
             if (Gap)
             {
                 GapTime -= gameTime.ElapsedGameTime;
@@ -84,8 +121,8 @@
                 }
             }
 
-            var positionOffsetX = Direction.X*MoveSpeed;
-            var positionOffsetY = Direction.Y*MoveSpeed;
+            var positionOffsetX = Direction.X * MoveSpeed * elapsedSeconds;
+            var positionOffsetY = Direction.Y * MoveSpeed * elapsedSeconds;
 
             var positionOffsetVector = new Vector2(positionOffsetX, positionOffsetY);
 
@@ -97,14 +134,14 @@
             Position += positionOffsetVector;
         }
 
-        public void TurnLeft()
+        public void TurnLeft(float elapsedSeconds)
         {
-            Direction = Vector2.Normalize(CalculateNewDirection(-BasicRotationSpeed));
+            Direction = Vector2.Normalize(CalculateNewDirection(-BasicRotationSpeed*elapsedSeconds));
         }
 
-        public void TurnRight()
+        public void TurnRight(float elapsedSeconds)
         {
-            Direction = Vector2.Normalize(CalculateNewDirection(BasicRotationSpeed));
+            Direction = Vector2.Normalize(CalculateNewDirection(BasicRotationSpeed*elapsedSeconds));
         }
 
         private Vector2 CalculateNewDirection(float angle)

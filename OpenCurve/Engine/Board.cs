@@ -64,33 +64,7 @@
             }
 
             FpsCounter.Update(gameTime);
-
-            foreach (var player in Players)
-            {
-                if (player.PlayerControls.PadController)
-                {
-                    if (GamePad.GetState(player.PlayerControls.PlayerIndex).DPad.Left == ButtonState.Pressed)
-                    {
-                        player.TurnLeft();
-                    }
-                    if (GamePad.GetState(player.PlayerControls.PlayerIndex).DPad.Right == ButtonState.Pressed)
-                    {
-                        player.TurnRight();
-                    }
-                }
-                else
-                {
-                    if (Keyboard.GetState().IsKeyDown(player.PlayerControls.MoveLeftKey))
-                    {
-                        player.TurnLeft();
-                    }
-                    if (Keyboard.GetState().IsKeyDown(player.PlayerControls.MoveRightKey))
-                    {
-                        player.TurnRight();
-                    }
-                }
-                player.ApplyBonuses();
-            }
+            Players.ForEach(p => p.Update(gameTime));
 
             foreach (var player in Players.Where(p => p.IsAlive))
             {
@@ -113,7 +87,6 @@
         public void Draw(GameTime gameTime)
         {
             SpriteBatch.GraphicsDevice.Clear(Color.Black);
-
 
             SpriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.LinearClamp, null, null);
 
@@ -158,10 +131,11 @@
 
         public void Reset(GameOptions gameOptions)
         {
-            RoundLimit = gameOptions.RoundLimit;
-            BoardSize = gameOptions.BoardSize;
             ActualRound = 1;
             Players.Clear();
+
+            RoundLimit = gameOptions.RoundLimit;
+            BoardSize = gameOptions.BoardSize;
 
             _boardField = new bool[BoardSize.Width, BoardSize.Height];
 
@@ -170,17 +144,7 @@
                 Players.Add(PlayerFactory.CreatePlayer(playerOptions));
             }
 
-            RandomizePlayersPositions();
-            RandomizePlayersDirection();
-        }
-
-        private void RandomizePlayersPositions()
-        {
             Players.ForEach(p => p.RandomizePosition(BoardSize));
-        }
-
-        private void RandomizePlayersDirection()
-        {
             Players.ForEach(p => p.RandomizeDirection());
         }
 
@@ -257,11 +221,10 @@
             Players.ForEach(p => p.Gap = true);
             Players.ForEach(p => p.GapDelay = TimeSpan.FromSeconds(3));
             Players.ForEach(p => p.GapTime = TimeSpan.FromSeconds(1.5));
+            Players.ForEach(p => p.RandomizePosition(BoardSize));
+            Players.ForEach(p => p.RandomizeDirection());
 
             _boardField = new bool[BoardSize.Width, BoardSize.Height];
-
-            RandomizePlayersPositions();
-            RandomizePlayersDirection();
         }
     }
 }
