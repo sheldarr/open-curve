@@ -101,6 +101,11 @@
 
         public void MakeMove(GameTime gameTime)
         {
+            if (!IsAlive)
+            {
+                return;
+            }
+
             var elapsedSeconds = gameTime.ElapsedGameTime.Milliseconds / 1000f;
             if (Gap)
             {
