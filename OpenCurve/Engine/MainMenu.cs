@@ -14,7 +14,7 @@
 
         private KeyboardState LastKeyboardState { get; set; }
         
-        private ContentManager Content { get; set; }
+        private ContentManager ContentManager { get; set; }
         private GraphicsDevice GraphicsDevice { get; set; }
         private SpriteBatch SpriteBatch { get; set; }
 
@@ -22,13 +22,13 @@
 
         public OnExit Exit;
 
-        private SpriteFont _menuSpriteFont;
+        private readonly SpriteFont _menuSpriteFont;
 
-        public MainMenu(ContentManager content, GraphicsDevice graphicsDevice)
+        public MainMenu()
         {
-            Content = content;
-            GraphicsDevice = graphicsDevice;
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            ContentManager = GameServices.GetService<ContentManager>();
+            GraphicsDevice = GameServices.GetService<GraphicsDevice>();
+            SpriteBatch = GameServices.GetService<SpriteBatch>();
 
             GameOptions = new GameOptions
             {
@@ -44,19 +44,8 @@
 
             AddGamePadPlayers();
             AddDefaultPlayers();
-        }
 
-        public void Initialize()
-        {
-        }
-
-        public void LoadContent()
-        {
-            _menuSpriteFont = Content.Load<SpriteFont>("MainMenuFont");
-        }
-
-        public void UnloadContent()
-        {
+            _menuSpriteFont = ContentManager.Load<SpriteFont>("MainMenuFont");
         }
 
         public void Update(GameTime gameTime)

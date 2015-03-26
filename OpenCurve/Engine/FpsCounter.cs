@@ -7,32 +7,19 @@
 
     public class FpsCounter : IOpenCurveComponent
     {
-        private readonly ContentManager _content;
         private readonly SpriteBatch _spriteBatch;
-        private SpriteFont _spriteFont;
+        private readonly SpriteFont _spriteFont;
 
         private int _frameRate;
         private int _frameCounter;
         private TimeSpan _elapsedTime = TimeSpan.Zero;
 
-        public FpsCounter(ContentManager content, SpriteBatch spriteBatch)
+        public FpsCounter()
         {
-            _content = content;
-            _spriteBatch = spriteBatch;
+            _spriteBatch = GameServices.GetService<SpriteBatch>();
+            _spriteFont = GameServices.GetService<ContentManager>().Load<SpriteFont>("GameFont");
         }
 
-        public void Initialize()
-        {
-        }
-
-        public void LoadContent()
-        {
-            _spriteFont = _content.Load<SpriteFont>("GameFont");
-        }
-
-        public void UnloadContent()
-        {
-        }
 
         public void Update(GameTime gameTime)
         {

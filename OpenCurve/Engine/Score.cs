@@ -11,7 +11,7 @@
     {
         private SpriteFont _scoreSpriteFont;
 
-        private ContentManager Content { get; set; }
+        private ContentManager ContentManager { get; set; }
         private GraphicsDevice GraphicsDevice { get; set; }
         private SpriteBatch SpriteBatch { get; set; }
 
@@ -19,24 +19,13 @@
 
         public IEnumerable<PlayerScore> PlayersScore { get; set; }
 
-        public Score(ContentManager content, GraphicsDevice graphicsDevice)
+        public Score()
         {
-            Content = content;
-            GraphicsDevice = graphicsDevice;
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
-        }
+            ContentManager = GameServices.GetService<ContentManager>();
+            GraphicsDevice = GameServices.GetService<GraphicsDevice>();
+            SpriteBatch = GameServices.GetService<SpriteBatch>();
 
-        public void Initialize()
-        {
-        }
-
-        public void LoadContent()
-        {
-            _scoreSpriteFont = Content.Load<SpriteFont>("MainMenuFont");
-        }
-
-        public void UnloadContent()
-        {
+            _scoreSpriteFont = ContentManager.Load<SpriteFont>("MainMenuFont");
         }
 
         public void Update(GameTime gameTime)

@@ -48,6 +48,7 @@
     <Compile Include="Engine\FpsCounter.cs" />
     <Compile Include="Engine\GameOptions.cs" />
     <Compile Include="Engine\Board.cs" />
+    <Compile Include="Engine\GameServices.cs" />
     <Compile Include="Engine\IOpenCurveComponent.cs" />
     <Compile Include="Engine\PlayerScore.cs" />
     <Compile Include="Engine\Score.cs" />

@@ -3,6 +3,8 @@
     using System.Linq;
     using Engine;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
 
     public delegate void OnExit();
 
@@ -25,13 +27,17 @@
 
         protected override void Initialize()
         {
-            _mainMenu = new MainMenu(Content, GraphicsDevice);
-            _board = new Board(Content, GraphicsDevice);
-            _score = new Score(Content, GraphicsDevice);
+            var spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _mainMenu.Initialize();
-            _board.Initialize();
-            _score.Initialize();
+            GameServices.AddService(Content);
+            GameServices.AddService(GraphicsDevice);
+            GameServices.AddService(_graphicsDeviceManager);
+            GameServices.AddService(Window);
+            GameServices.AddService(spriteBatch);
+
+            _mainMenu = new MainMenu();
+            _board = new Board();
+            _score = new Score();
 
             _mainMenu.Exit = MainMenuExit;
             _board.Exit = GameplayExit;
@@ -45,22 +51,9 @@
             _graphicsDeviceManager.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             _graphicsDeviceManager.IsFullScreen = true;
             _graphicsDeviceManager.ApplyChanges();
-            
+
             base.Initialize();
-        }
 
-        protected override void LoadContent()
-        {
-            _mainMenu.LoadContent();
-            _board.LoadContent();
-            _score.LoadContent();
-        }
-
-        protected override void UnloadContent()
-        {
-            _mainMenu.UnloadContent();
-            _board.UnloadContent();
-            _score.UnloadContent();
         }
 
         protected override void Update(GameTime gameTime)

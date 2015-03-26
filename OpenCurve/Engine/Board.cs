@@ -12,48 +12,29 @@
 
     public class Board : IOpenCurveComponent
     {
-        public ContentManager Content { get; set; }
-        public GraphicsDevice GraphicsDevice { get; set; }
+        public  List<Player> Players { get; set; }
 
-        public List<Player> Players { get; private set; }
-        public BoardSize BoardSize;
+        private BoardSize _boardSize;
 
         private bool[,] _boardField;
-        private Texture2D _playerTexture;
 
-        private SpriteBatch SpriteBatch { get; set; }
-        private FpsCounter FpsCounter { get; set; }
+        private readonly SpriteBatch _spriteBatch;
+        private readonly FpsCounter _fpsCounter;
 
         public OnExit Exit;
-        private SpriteFont _gameSpriteFont;
+        private readonly SpriteFont _gameSpriteFont;
 
         private int ActualRound { get; set; }
         private int RoundLimit { get; set; }
 
-        public Board(ContentManager content, GraphicsDevice graphicsDevice)
+        public Board()
         {
-            Content = content;
-            GraphicsDevice = graphicsDevice;
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = GameServices.GetService<SpriteBatch>();
             
             Players = new List<Player>();
-        }
+            _fpsCounter = new FpsCounter();
 
-        public void Initialize()
-        {
-            FpsCounter = new FpsCounter(Content, SpriteBatch);
-        }
-
-        public void LoadContent()
-        {
-            _playerTexture = Content.Load<Texture2D>("player");
-            _gameSpriteFont = Content.Load<SpriteFont>("MainMenuFont");
-            FpsCounter.LoadContent();
-        }
-
-        public void UnloadContent()
-        {
-            FpsCounter.UnloadContent();
+            _gameSpriteFont = GameServices.GetService<ContentManager>().Load<SpriteFont>("MainMenuFont");
         }
 
         public void Update(GameTime gameTime)
@@ -63,7 +44,7 @@
                 Exit();
             }
 
-            FpsCounter.Update(gameTime);
+            _fpsCounter.Update(gameTime);
             Players.ForEach(p => p.Update(gameTime));
 
             foreach (var player in Players.Where(p => p.IsAlive))
@@ -86,48 +67,43 @@
 
         public void Draw(GameTime gameTime)
         {
-            SpriteBatch.GraphicsDevice.Clear(Color.Black);
+            _spriteBatch.GraphicsDevice.Clear(Color.Black);
 
-            SpriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.LinearClamp, null, null);
+            Players.ForEach(p => p.Draw(gameTime));
+
+            DrawPlayerPoints();
+            DrawRoundCounter();
+            _fpsCounter.Draw(gameTime);
+        }
+
+        public void DrawPlayerPoints()
+        {
+            _spriteBatch.Begin();
 
             var pointsPosition = new Vector2(160, 0);
-
             var orderedPlayers = Players.OrderByDescending(p => p.Points);
 
             foreach (var player in orderedPlayers)
             {
-                SpriteBatch.DrawString(_gameSpriteFont, player.Points.ToString(), pointsPosition, player.Color);
+                _spriteBatch.DrawString(_gameSpriteFont, player.Points.ToString(), pointsPosition, player.Color);
                 pointsPosition += new Vector2(30, 0);
-
-                foreach (var previousPosition in player.PreviousPositions)
-                {
-                    SpriteBatch.Draw(_playerTexture, previousPosition - new Vector2(player.Size / 2, player.Size / 2), null, player.Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
-                }
-
-                SpriteBatch.Draw(_playerTexture, player.Position - new Vector2(player.Size / 2, player.Size / 2), null, player.Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
-
-                var rightCrossVector = Vector3.Cross(new Vector3(player.Direction, 0), Vector3.UnitZ);
-                var leftCrossVector = Vector3.Cross(new Vector3(player.Direction, 0), -Vector3.UnitZ);
-
-                var directionPosition = new Vector2(player.Position.X + player.Direction.X * player.Size, player.Position.Y + player.Direction.Y * player.Size);
-                var leftPerpendicularDirection = new Vector2(player.Position.X + rightCrossVector.X * player.Size, player.Position.Y + rightCrossVector.Y * player.Size);
-                var rightPerpendicularDirection = new Vector2(player.Position.X + leftCrossVector.X * player.Size, player.Position.Y + leftCrossVector.Y * player.Size);
-
-                SpriteBatch.Draw(_playerTexture, directionPosition, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
-                SpriteBatch.Draw(_playerTexture, leftPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
-                SpriteBatch.Draw(_playerTexture, rightPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
             }
+
+            _spriteBatch.End();
+        }
+
+        public void DrawRoundCounter()
+        {
+            _spriteBatch.Begin();
 
             var roundPosition = new Vector2(4, 0);
             var round = String.Format("Round {0} / {1}", ActualRound, RoundLimit);
 
-            SpriteBatch.DrawString(_gameSpriteFont, round, roundPosition, Color.White);
+            _spriteBatch.DrawString(_gameSpriteFont, round, roundPosition, Color.White);
 
-            SpriteBatch.End();
-
-            FpsCounter.Draw(gameTime);
-
+            _spriteBatch.End();
         }
+
 
         public void Reset(GameOptions gameOptions)
         {
@@ -135,28 +111,30 @@
             Players.Clear();
 
             RoundLimit = gameOptions.RoundLimit;
-            BoardSize = gameOptions.BoardSize;
+            _boardSize = gameOptions.BoardSize;
 
-            _boardField = new bool[BoardSize.Width, BoardSize.Height];
+            _boardField = new bool[_boardSize.Width, _boardSize.Height];
 
             foreach (var playerOptions in gameOptions.PlayerOptions)
             {
                 Players.Add(PlayerFactory.CreatePlayer(playerOptions));
             }
 
-            Players.ForEach(p => p.RandomizePosition(BoardSize));
-            Players.ForEach(p => p.RandomizeDirection());
+            Players.ForEach(player => player.ResetToDefaultValues());
+            Players.ForEach(player => player.RandomizePosition(_boardSize));
+            Players.ForEach(player => player.RandomizeDirection());
         }
 
-        private void FillBoard(Vector2 playerPosition, int playerSize)
+        private void FillBoard(Vector2 playerPosition, int _playersize)
         {
-            var areaRadius = (int)Math.Round((double)playerSize / 2);
+            var halfOf_playersize = _playersize/2f;
+            var areaRadius = (int)Math.Ceiling(halfOf_playersize);
 
             for (var x = (int)playerPosition.X - areaRadius; x < (int)playerPosition.X + areaRadius; x++)
             {
                 for (var y = (int)playerPosition.Y - areaRadius; y < (int)playerPosition.Y + areaRadius; y++)
                 {
-                    if (x > 0 && y > 0 && x < BoardSize.Width && y < BoardSize.Height)
+                    if (x > 0 && y > 0 && x < _boardSize.Width && y < _boardSize.Height)
                     {
                         _boardField[x, y] = true;
                     }
@@ -166,13 +144,13 @@
 
         private void CheckCollisions(Player player)
         {
-            if (CheckCollisionsWithBoard(player) || CheckCollisionWithOtherPlayers(player))
+            if (CheckCollisionsWithBoard(player) || CheckCollisionWithOther_players(player))
             {
                 player.IsAlive = false;
 
-                foreach (var otherAlivePlayers in Players.Where(p => p != player && p.IsAlive))
+                foreach (var otherAlive_players in Players.Where(p => p != player && p.IsAlive))
                 {
-                    otherAlivePlayers.Points++;
+                    otherAlive_players.Points++;
                 }
             }
         }
@@ -181,11 +159,11 @@
         {
             return player.Position.Y <= 0 
                 || player.Position.X <= 0 
-                || player.Position.Y >= BoardSize.Height
-                || player.Position.X >= BoardSize.Width;
+                || player.Position.Y >= _boardSize.Height
+                || player.Position.X >= _boardSize.Width;
         }
 
-        private bool CheckCollisionWithOtherPlayers(Player player)
+        private bool CheckCollisionWithOther_players(Player player)
         {
             var areaRadius = (int)Math.Round((double)player.Size / 2);
             var directionPosition = new Vector2(player.Position.X + player.Direction.X * player.Size * 2,
@@ -195,7 +173,7 @@
             {
                 for (var y = (int)directionPosition.Y - areaRadius; y < (int)directionPosition.Y + areaRadius; y++)
                 {
-                    if (x <= 0 || y <= 0 || x >= BoardSize.Width || y >= BoardSize.Height) continue;
+                    if (x <= 0 || y <= 0 || x >= _boardSize.Width || y >= _boardSize.Height) continue;
 
                     if (_boardField[x, y])
                     {
@@ -216,15 +194,11 @@
                 Exit();
             }
 
-            Players.ForEach(p => p.IsAlive = true);
-            Players.ForEach(p => p.PreviousPositions.Clear());
-            Players.ForEach(p => p.Gap = true);
-            Players.ForEach(p => p.GapDelay = TimeSpan.FromSeconds(3));
-            Players.ForEach(p => p.GapTime = TimeSpan.FromSeconds(1.5));
-            Players.ForEach(p => p.RandomizePosition(BoardSize));
-            Players.ForEach(p => p.RandomizeDirection());
+            Players.ForEach(player => player.ResetToDefaultValues());
+            Players.ForEach(player => player.RandomizePosition(_boardSize));
+            Players.ForEach(player => player.RandomizeDirection());
 
-            _boardField = new bool[BoardSize.Width, BoardSize.Height];
+            _boardField = new bool[_boardSize.Width, _boardSize.Height];
         }
     }
 }

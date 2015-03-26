@@ -5,10 +5,15 @@
     using Engine;
     using Engine.Bonuses;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
 
-    public class Player
+    public class Player : IOpenCurveComponent
     {
+        private readonly SpriteBatch _spriteBatch;
+        private readonly Texture2D _texture;
+
         public Color Color { get; set; }
 
         public IList<Vector2> PreviousPositions { get; set; } 
@@ -37,22 +42,28 @@
 
         public Player()
         {
-            Color = Color.Red;
+            _spriteBatch = GameServices.GetService<SpriteBatch>();
+            _texture = GameServices.GetService<ContentManager>().Load<Texture2D>("player.png");
 
             PlayerBonuses = new List<IPlayerBonus>();
             PreviousPositions = new List<Vector2>();
-            Position = new Vector2(0, 0);
-            Direction = new Vector2(1, 1);
 
-            BasicMoveSpeed = 60.0f;
-            BasicRotationSpeed = 8f;
-            BasicSize = 4;
+            ResetToDefaultValues();
+        }
+
+        public void ResetToDefaultValues()
+        {
+            PreviousPositions.Clear();
 
             GapDelay = TimeSpan.FromSeconds(3);
             GapTime = TimeSpan.FromSeconds(1.5);
             Gap = true;
 
             IsAlive = true;
+
+            BasicMoveSpeed = 60.0f;
+            BasicRotationSpeed = 8f;
+            BasicSize = 4;
         }
 
         public void Update(GameTime gameTime)
@@ -60,6 +71,31 @@
             ApplyBonuses();
             HandleControls(gameTime);
             MakeMove(gameTime);
+        }
+
+        public void Draw(GameTime gameTime)
+        {
+            _spriteBatch.Begin();
+
+            foreach (var previousPosition in PreviousPositions)
+            {
+                _spriteBatch.Draw(_texture, previousPosition - new Vector2(Size / 2, Size / 2), null, Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
+            }
+
+            _spriteBatch.Draw(_texture, Position - new Vector2(Size / 2, Size / 2), null, Color, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
+
+            var rightCrossVector = Vector3.Cross(new Vector3(Direction, 0), Vector3.UnitZ);
+            var leftCrossVector = Vector3.Cross(new Vector3(Direction, 0), -Vector3.UnitZ);
+
+            var directionPosition = new Vector2(Position.X + Direction.X * Size, Position.Y + Direction.Y * Size);
+            var leftPerpendicularDirection = new Vector2(Position.X + rightCrossVector.X * Size, Position.Y + rightCrossVector.Y * Size);
+            var rightPerpendicularDirection = new Vector2(Position.X + leftCrossVector.X * Size, Position.Y + leftCrossVector.Y * Size);
+
+            _spriteBatch.Draw(_texture, directionPosition, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
+            _spriteBatch.Draw(_texture, leftPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
+            _spriteBatch.Draw(_texture, rightPerpendicularDirection, null, Color.Purple, 0f, new Vector2(0, 0), 0.2f, SpriteEffects.None, 0);
+
+            _spriteBatch.End();
         }
 
         public void HandleControls(GameTime gameTime)
