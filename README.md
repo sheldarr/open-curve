@@ -1,3 +1,3 @@
-# OpenCurve
+# Open Curve
 
-Simple open source copy of Achting Die Kurve game made on MonoGame framework.
+Open source remake of Achtung Die Kurve game made on MonoGame framework.
